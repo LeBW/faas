@@ -148,13 +148,15 @@ func main() {
 		ServiceQuery:         externalServiceQuery,
 	}
 
+	scalingFunctionCache := scaling.NewFunctionCache(scalingConfig.CacheExpiry)
 	functionProxy := faasHandlers.Proxy
 	if config.ScaleFromZero {
-		scalingFunctionCache := scaling.NewFunctionCache(scalingConfig.CacheExpiry)
 		scaler := scaling.NewFunctionScaler(scalingConfig, scalingFunctionCache)
 		functionProxy = handlers.MakeScalingHandler(faasHandlers.Proxy, scaler, scalingConfig, config.Namespace)
 	}
-	functionProxy = handlers.MakePredictHandler(functionProxy)
+	if config.PredictorURL != nil {
+		functionProxy = handlers.MakePredictHandler(*config.PredictorURL, functionProxy)
+	}
 
 	if config.UseNATS() {
 		log.Println("Async enabled: Using NATS Streaming.")
