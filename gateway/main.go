@@ -154,6 +154,7 @@ func main() {
 		scaler := scaling.NewFunctionScaler(scalingConfig, scalingFunctionCache)
 		functionProxy = handlers.MakeScalingHandler(faasHandlers.Proxy, scaler, scalingConfig, config.Namespace)
 	}
+	functionProxy = handlers.MakePredictHandler(functionProxy)
 
 	if config.UseNATS() {
 		log.Println("Async enabled: Using NATS Streaming.")
