@@ -5,6 +5,7 @@ package main
 
 import (
 	"fmt"
+	"github.com/openfaas/faas/gateway/scheduling"
 	"log"
 	"net/http"
 	"time"
@@ -149,13 +150,16 @@ func main() {
 	}
 
 	scalingFunctionCache := scaling.NewFunctionCache(scalingConfig.CacheExpiry)
+
+	scheduler := scheduling.NewFunctionScheduler(scalingConfig, config.Namespace, scalingFunctionCache)
+
 	functionProxy := faasHandlers.Proxy
 	if config.ScaleFromZero {
 		scaler := scaling.NewFunctionScaler(scalingConfig, scalingFunctionCache)
 		functionProxy = handlers.MakeScalingHandler(faasHandlers.Proxy, scaler, scalingConfig, config.Namespace)
 	}
 	if config.PredictorURL != nil {
-		functionProxy = handlers.MakePredictHandler(*config.PredictorURL, functionProxy)
+		functionProxy = handlers.MakePredictHandler(*config.PredictorURL, scheduler, functionProxy)
 	}
 
 	if config.UseNATS() {

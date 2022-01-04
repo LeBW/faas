@@ -11,5 +11,6 @@ require (
 	github.com/openfaas/nats-queue-worker v0.0.0-20210726161954-ada9a31504c9
 	github.com/prometheus/client_golang v1.9.0
 	github.com/prometheus/client_model v0.2.0
+	github.com/robfig/cron/v3 v3.0.1
 	go.uber.org/goleak v1.1.10
 )
