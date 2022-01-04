@@ -3,6 +3,7 @@ package handlers
 import (
 	"bytes"
 	"encoding/json"
+	"io/ioutil"
 	"log"
 	"net/http"
 	"net/url"
@@ -34,12 +35,16 @@ func MakePredictHandler(predictorURL url.URL, next http.HandlerFunc) http.Handle
 			if err != nil {
 				log.Printf("Parse map to request body failed, err: %s\n", err)
 			}
-			//predictReq, err := http.NewRequest(http.MethodPost, predictorURL.String(), bytes.NewBuffer(requestBody))
-			resp, err := http.Post(predictorURL.String(), "application/json", bytes.NewBuffer(requestBody))
+			log.Printf("[MakePredictHandler] request body: %s", requestBody)
+			concreteURL := predictorURL.String() + "predict"
+			resp, err := http.Post(concreteURL, "application/json", bytes.NewBuffer(requestBody))
+			responseBody, _ := ioutil.ReadAll(resp.Body)
 			if err != nil {
 				log.Printf("Send predict request failed, err: %s\n", err)
+			} else if resp.StatusCode != 200 {
+				log.Printf("Send predict request failed. status code: %d, body: %s\n", resp.StatusCode, string(responseBody))
 			} else {
-				log.Printf("Send predict request succeed. Result: %s\n", resp.Body)
+				log.Printf("Send predict request succeed. Result: %s\n", string(responseBody))
 			}
 		}
 		next.ServeHTTP(w, r)
