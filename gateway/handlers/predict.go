@@ -3,7 +3,6 @@ package handlers
 import (
 	"bytes"
 	"encoding/json"
-	"github.com/openfaas/faas/gateway/scheduling"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -11,7 +10,7 @@ import (
 	"strings"
 )
 
-func MakePredictHandler(predictorURL url.URL, scheduler scheduling.FunctionScheduler, next http.HandlerFunc) http.HandlerFunc {
+func MakePredictHandler(predictorURL url.URL, scheduler FunctionScheduler, next http.HandlerFunc) http.HandlerFunc {
 
 	return func(w http.ResponseWriter, r *http.Request) {
 		log.Printf("In MakePredictHandler. r.Host: %s, r.RemoteAddress: %s\n", r.Host, r.RemoteAddr)

@@ -1,7 +1,6 @@
-package scheduling
+package handlers
 
 import (
-	"github.com/openfaas/faas/gateway/handlers"
 	"github.com/openfaas/faas/gateway/scaling"
 	"github.com/robfig/cron/v3"
 	"log"
@@ -24,7 +23,7 @@ type FunctionScheduler struct {
 	cron             *cron.Cron
 }
 
-func (scheduler *FunctionScheduler) AddPredictions(predictions []handlers.Prediction) {
+func (scheduler *FunctionScheduler) AddPredictions(predictions []Prediction) {
 	len := len(predictions)
 	log.Printf("[AddPredictions] number of predictions: %d\n", len)
 	for i := range predictions {
@@ -32,7 +31,7 @@ func (scheduler *FunctionScheduler) AddPredictions(predictions []handlers.Predic
 	}
 }
 
-func (scheduler *FunctionScheduler) schedule(prediction handlers.Prediction) {
+func (scheduler *FunctionScheduler) schedule(prediction Prediction) {
 	// easy schedule
 	scheduleTimestamp := time.Now().UnixNano() + int64(prediction.PredictTime)
 	scheduleCron := time.Unix(0, scheduleTimestamp).Format("05 04 15 ? 01 ?")
