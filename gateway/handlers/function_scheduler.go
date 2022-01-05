@@ -35,7 +35,8 @@ func (scheduler *FunctionScheduler) schedule(prediction Prediction) {
 	// easy schedule
 	scheduleTimestamp := time.Now().UnixNano() + int64(prediction.PredictTime)
 	scheduleCron := time.Unix(0, scheduleTimestamp).Format("05 04 15 ? 01 ?")
-	log.Printf("[schedule] cron expression: %s\n", scheduleCron)
+	log.Printf("%#v", prediction)
+	log.Printf("[schedule] scheduleTimestamp: %d, cron expression: %s\n", scheduleTimestamp, scheduleCron)
 	scheduler.cron.AddFunc(scheduleCron, func() {
 		log.Printf("Cron job start. Schedule function %s", prediction.FunctionName)
 		err := scheduler.Config.ServiceQuery.SetReplicas(prediction.FunctionName, scheduler.DefaultNamespace, uint64(prediction.Probability))
