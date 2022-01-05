@@ -33,7 +33,7 @@ func (scheduler *FunctionScheduler) AddPredictions(predictions []Prediction) {
 
 func (scheduler *FunctionScheduler) schedule(prediction Prediction) {
 	// easy schedule
-	scheduleTimestamp := time.Now().UnixNano() + int64(prediction.PredictTime)
+	scheduleTimestamp := time.Now().UnixNano()/1e6 + int64(prediction.PredictTime)
 	scheduleCron := time.Unix(0, scheduleTimestamp).Format("05 04 15 ? 01 ?")
 	log.Printf("%#v", prediction)
 	log.Printf("[schedule] scheduleTimestamp: %d, cron expression: %s\n", scheduleTimestamp, scheduleCron)
